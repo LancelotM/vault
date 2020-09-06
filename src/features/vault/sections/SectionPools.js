@@ -16,6 +16,7 @@ import Slider from '@material-ui/core/Slider';
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
+import Hidden from '@material-ui/core/Hidden';
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
@@ -35,7 +36,7 @@ const useStyles = makeStyles(sectionPoolsStyle);
 export default function SectionPools() {
   const { t, i18n } = useTranslation();
   const { web3, address } = useConnectWallet();
-  const { pools, fetchPoolBalances } = useFetchPoolBalances();
+  let { pools, fetchPoolBalances } = useFetchPoolBalances();
   const { tokens, fetchBalances } = useFetchBalances();
   const [ openedCardList, setOpenCardList ] = useState([0]);
   const classes = useStyles();
@@ -207,7 +208,8 @@ export default function SectionPools() {
   const valuetext = (value) => {
     return `${value}°C`;
   }
-
+  pools[1] = pools[0];
+console.warn('pools',pools);
   return (
     <GridContainer justify="center">
       <GridItem xs={12} sm={10}>
@@ -228,24 +230,20 @@ export default function SectionPools() {
               <AccordionSummary
                 className={classes.details}
               >
-                <GridItem xs={12}>
-                  <GridContainer>
-                    <GridItem xs={12} style={Object.assign({},{},gridItemStyle,{justifyContent:'space-between'})}>
-                        <GridItem xs={12} sm={2} style={Object.assign({},{},gridItemStyle,{justifyContent:'flex-start'})}>
-                            <GridItem xs={6}>
-                                <Avatar 
-                                alt={pool.token}
-                                src={require(`../../../images/${pool.token}-logo.png`)}
-                                style={{}}
-                                />
-                            </GridItem>
-                            <GridItem xs={6} style={Object.assign({},gridItemStyle,{flexDirection:'column',alignItems:'space-around'})}>
-                                <div className={classes.iconContainerMainTitle}>{pool.token}</div>
-                                <span className={classes.iconContainerSubTitle}>{pool.token}</span>
-                            </GridItem>
-                        </GridItem>
+                <GridContainer xs={12} container direction='row' justify='space-between' alignItems="center">
+                    <GridItem xs={6} sm={2} container direction='row' justify='flex-start' alignItems="center">
+                        <Avatar 
+                            alt={pool.token}
+                            src={require(`../../../images/${pool.token}-logo.png`)}
+                            />
+                        <div style={Object.assign({},gridItemStyle,{flexDirection:'column',alignItems:'space-around',marginLeft:'20%'})}>
+                            <div className={classes.iconContainerMainTitle}>{pool.token}</div>
+                            <span className={classes.iconContainerSubTitle}>{pool.token}</span>
+                        </div>
+                    </GridItem>
 
-                        <GridItem xs={12} sm={9} style={Object.assign({},gridItemStyle,{justifyContent:'space-around'})}>
+                    <Hidden xsDown>
+                        <GridContainer sm={7} container direction='row' justify='space-around' alignItems="center">
                             <div style={Object.assign({},gridItemStyle,{flexDirection:'column',alignItems:'space-around'})}>
                                 <div className={classes.iconContainerMainTitle}>{forMat(balanceSingle)} { pool.token }</div>
                                 <div className={classes.iconContainerSubTitle}>{t('Vault-Balance')}</div>
@@ -258,40 +256,35 @@ export default function SectionPools() {
                                 <div className={classes.iconContainerMainTitle}>{depositedRoi} %</div>
                                 <div className={classes.iconContainerSubTitle}>{t('Vault-ListRoi')}</div>
                             </div>
-                        </GridItem>
+                        </GridContainer>
+                    </Hidden>
 
-                        <GridItem xs={12} sm={3} style={Object.assign({},gridItemStyle,{justifyContent:'space-around'})}>
-                            <IconButton
-                                classes={{
-                                    root:classes.iconContainerSecond
-                                }}
-                                // className={classes.iconContainerSecond}
-                                onClick={
-                                    event => {
-                                        event.stopPropagation();
-                                        window.open(isZh?pool.tokenDescriptionUrl2:pool.tokenDescriptionUrl)
-                                    }
+                    <GridContainer xs={6} sm={3} container direction='row' justify='flex-end' alignItems="center">
+                        <IconButton
+                            className={classes.iconContainerSecond}
+                            onClick={
+                                event => {
+                                    event.stopPropagation();
+                                    window.open(isZh?pool.tokenDescriptionUrl2:pool.tokenDescriptionUrl)
                                 }
-                            >
-                                <i className="far fa-question-circle" />
-                            </IconButton>
-                            <IconButton
-                                className={classes.iconContainerPrimary}
-                                onClick={() => openCard(index)}
-                            >
-                                {
-                                    openedCardList.includes(index) ? <i className="fas fa-arrow-up" /> : <i className="fas fa-arrow-down" />
-                                }
-                            </IconButton>
-                        </GridItem>
-                    </GridItem>
-                  </GridContainer>
-                </GridItem>
+                            }
+                        >
+                            <i className="far fa-question-circle" />
+                        </IconButton>
+                        <IconButton
+                            className={classes.iconContainerPrimary}
+                            onClick={() => openCard(index)}
+                        >
+                            {
+                                openedCardList.includes(index) ? <i className="fas fa-arrow-up" /> : <i className="fas fa-arrow-down" />
+                            }
+                        </IconButton>
+                    </GridContainer>
+                </GridContainer>
               </AccordionSummary>
               <AccordionDetails>
-                <GridItem xs={12}>
-                  <GridContainer style={Object.assign({},gridItemStyle,{justifyContent: "space-between",})}>
-                    <GridItem xs={6} className={classes.sliderDetailContainer}>
+                <GridItem xs={12} container direction='row' justify='space-between' alignItems="center">
+                    <GridItem sm={6} xs={12}>
                         <div className={classes.showDetail}>
                             <div className={classes.showDetailLeft}>
                                 {
@@ -302,47 +295,56 @@ export default function SectionPools() {
                                 {t('Vault-Balance')}:{balanceSingle.toFormat(4)} { pool.token }
                             </div>
                         </div>
-                        <Slider 
-                            classes={{
-                                root: classes.depositedBalanceSliderRoot,
-                                markLabel: classes.depositedBalanceSliderMarkLabel,
-                                rail:classes.depositedBalanceSliderRail,
-                                mark:classes.depositedBalanceSliderMark,
-                            }}
-                            aria-labelledby="continuous-slider" 
-                            defaultValue={0}
-                            value={depositedBalance['slider-'+index]?depositedBalance['slider-'+index]:0}
-                            getAriaValueText={valuetext}
-                            valueLabelDisplay="auto"
-                            marks={marks}
-                            onChange={handleDepositedBalance.bind(this,index,balanceSingle.toNumber())}
-                            />
-                        <div>
-                            {
-                                depositedBalance[index]>pool.allowance ? (
-                                    <div className={classes.showDetailButtonCon}>
+                        <GridItem>
+                            <Slider 
+                                classes={{
+                                    root: classes.depositedBalanceSliderRoot,
+                                    markLabel: classes.depositedBalanceSliderMarkLabel,
+                                    rail:classes.depositedBalanceSliderRail,
+                                    mark:classes.depositedBalanceSliderMark,
+                                }}
+                                aria-labelledby="continuous-slider" 
+                                defaultValue={0}
+                                value={depositedBalance['slider-'+index]?depositedBalance['slider-'+index]:0}
+                                getAriaValueText={valuetext}
+                                valueLabelDisplay="auto"
+                                marks={marks}
+                                onChange={handleDepositedBalance.bind(this,index,balanceSingle.toNumber())}
+                                />
+                        </GridItem>
+                        {
+                            depositedBalance[index]>pool.allowance ? (
+                                <GridContainer container direction='row' justify='space-around' alignItems="center" className={classes.xsButtonMarginBottomContainer}>
+                                    <GridItem>
                                         <Button
                                             style={{
+                                                width:'100%',
                                                 backgroundColor:'#353848',
                                                 color:'#FF2D82',
                                                 boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
                                             }}
+                                            round
+                                            className = {classes.xsButtonMarginBottom}
                                             color="primary"
                                             onClick={onApproval.bind(this, pool, index)}
                                             disabled={fetchApprovalPending[index] }
                                             >
                                             {fetchApprovalPending[index] ? `${t('Vault-ApproveING')}` : `${t('Vault-ApproveButton')}`}
                                         </Button>
-                                    </div>
-                                ) : (
-                                    <div className={classes.showDetailButtonCon}>
+                                    </GridItem>
+                                </GridContainer>
+                            ) : (
+                                <GridContainer  container direction='row' justify='space-around' alignItems="center" className={classes.xsButtonMarginBottomContainer}>
+                                    <GridItem sm={6} xs={12}>
                                         <Button 
                                             style={{
+                                                width:'100%',
                                                 backgroundColor:'#353848',
                                                 color:'#FF2D82',
                                                 boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
                                             }}
                                             round
+                                            className = {classes.xsButtonMarginBottom}
                                             onFocus={(event) => event.stopPropagation()}
                                             disabled={
                                                 !Boolean(depositedBalance[index]) || fetchDepositPending[index] || (new BigNumber(depositedBalance[index]).toNumber() > balanceSingle.toNumber())
@@ -350,13 +352,17 @@ export default function SectionPools() {
                                             onClick={onDeposit.bind(this, pool, false, balanceSingle, index)}
                                             >{t('Vault-DepositButton')}
                                         </Button>
+                                    </GridItem>
+                                    <GridItem sm={6} xs={12}>
                                         <Button 
                                             style={{
+                                                width:'100%',
                                                 backgroundColor:'#353848',
                                                 color:'#FF2D82',
                                                 boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
                                             }}
                                             round
+                                            className = {classes.xsButtonMarginBottom}
                                             onFocus={(event) => event.stopPropagation()}
                                             disabled={
                                                 fetchDepositPending[index] || (new BigNumber(depositedBalance[index]).toNumber() > balanceSingle.toNumber())
@@ -364,13 +370,13 @@ export default function SectionPools() {
                                             onClick={onDeposit.bind(this, pool, true, balanceSingle, index)}
                                             >{t('Vault-DepositButtonAll')}
                                         </Button>
-                                    </div>
-                                )
-                            }
-                        </div>
+                                    </GridItem>
+                                </GridContainer>
+                            )
+                        }
                     </GridItem>
 
-                    <GridItem xs={6} className={classes.sliderDetailContainer}>
+                    <GridItem sm={6} xs={12}>
                         <div className={classes.showDetail}>
                             <div className={classes.showDetailLeft}>
                                 {
@@ -396,38 +402,44 @@ export default function SectionPools() {
                             marks={marks}
                             onChange={handleWithdrawAmount.bind(this,index,singleDepositedBalance.toNumber())}
                             />
-                        <div className={classes.showDetailButtonCon}>
-                            <Button 
-                                style={{
-                                    backgroundColor:'#353848',
-                                    color:'#635AFF',
-                                    boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
-                                }}
-                                round
-                                type="button"
-                                color="primary"
-                                disabled={fetchWithdrawPending[index] || !Boolean(withdrawAmount[index])}
-                                onClick={onWithdraw.bind(this, pool, false, singleDepositedBalance, index)}
-                                >
-                                {fetchWithdrawPending[index] ? `${t('Vault-WithdrawING')}`: `${t('Vault-WithdrawButton')}`}
-                            </Button>
-                            <Button 
-                                style={{
-                                    backgroundColor:'#353848',
-                                    color:'#635AFF',
-                                    boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
-                                }}
-                                round
-                                type="button"
-                                color="primary"
-                                onClick={onWithdraw.bind(this, pool, true, singleDepositedBalance, index)}
-                                >
-                                {fetchWithdrawPending[index] ? `${t('Vault-WithdrawING')}`: `${t('Vault-WithdrawButtonAll')}`}
-                            </Button>
-                        </div>
+                        <GridContainer  container direction='row' justify='space-around' alignItems="center" className={classes.xsButtonMarginBottomContainer}>
+                            <GridItem sm={6} xs={12}>
+                                <Button 
+                                    style={{
+                                        width:'100%',
+                                        backgroundColor:'#353848',
+                                        color:'#635AFF',
+                                        boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
+                                    }}
+                                    round
+                                    className = {classes.xsButtonMarginBottom}
+                                    type="button"
+                                    color="primary"
+                                    disabled={fetchWithdrawPending[index] || !Boolean(withdrawAmount[index])}
+                                    onClick={onWithdraw.bind(this, pool, false, singleDepositedBalance, index)}
+                                    >
+                                    {fetchWithdrawPending[index] ? `${t('Vault-WithdrawING')}`: `${t('Vault-WithdrawButton')}`}
+                                </Button>
+                            </GridItem>
+                            <GridItem sm={6} xs={12}>
+                                <Button 
+                                    style={{
+                                        width:'100%',
+                                        backgroundColor:'#353848',
+                                        color:'#635AFF',
+                                        boxShadow:'0 2px 2px 0 rgba(53, 56, 72, 0.14), 0 3px 1px -2px rgba(53, 56, 72, 0.2), 0 1px 5px 0 rgba(53, 56, 72, 0.12)'
+                                    }}
+                                    round
+                                    className = {classes.xsButtonMarginBottom}
+                                    type="button"
+                                    color="primary"
+                                    onClick={onWithdraw.bind(this, pool, true, singleDepositedBalance, index)}
+                                    >
+                                    {fetchWithdrawPending[index] ? `${t('Vault-WithdrawING')}`: `${t('Vault-WithdrawButtonAll')}`}
+                                </Button>
+                            </GridItem>
+                        </GridContainer>
                     </GridItem>
-
-                  </GridContainer>
                 </GridItem>
               </AccordionDetails>
             </Accordion>

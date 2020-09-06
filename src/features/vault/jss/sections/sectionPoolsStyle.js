@@ -133,6 +133,7 @@ const sectionPoolsStyle = theme => ({
       borderRadius:'8px',
       color:'#FF2D82',
       fontSize:'22px',
+      marginRight:'15%',
   },
   iconContainerPrimary: {
     width:'48px',
@@ -148,8 +149,6 @@ const sectionPoolsStyle = theme => ({
         color:'#fff',
         boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.06)',
         borderRadius: '8px',
-    },
-    sliderDetailContainer:{
     },
     showDetail:{
         display:'flex',
@@ -197,6 +196,13 @@ const sectionPoolsStyle = theme => ({
         display:'flex',
         justifyContent:'space-around',
     },
+    xsButtonMarginBottomContainer:{
+        marginBottom:'16px',
+    },
+    xsButtonMarginBottom:{
+        marginBottom:'16px',
+        marginTop:0,
+    }
 });
 
 export default sectionPoolsStyle;
