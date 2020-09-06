@@ -4,19 +4,17 @@ import React, { useEffect } from 'react';
 // import Close from "@material-ui/icons/Close";
 // core components
 // sections for this page
-import SectionTitle from './sections/SectionTitle';
-import SectionPools from './sections/SectionPools';
+import { StakePools } from './sections'
 // hooks
 
-export default function VaultPage() {
+export default function StakePage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
   }, []);
   return (
     <>
-      <SectionTitle />
-      <SectionPools />
+      <StakePools />
     </>
   );
 }
