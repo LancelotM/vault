@@ -22,11 +22,11 @@ import Button from "components/CustomButtons/Button.js";
 import { useTranslation } from 'react-i18next';
 
 import styles from "assets/jss/material-kit-pro-react/components/headerLinksStyle.js";
-
 const useStyles = makeStyles(styles);
 
 export default function HeaderLinks(props) {
-  const { dropdownHoverColor } = props;
+  const { dropdownHoverColor, address, action } = props;
+  const { connectWallet, disconnectWallet } = action;
   const classes = useStyles();
   const { t, i18n } = useTranslation();
   const [lng, setLanguage] = useState('en');
@@ -114,107 +114,11 @@ export default function HeaderLinks(props) {
         />
       </ListItem>
       <ListItem className={classes.listItem}>
-        <Button
-          color="transparent"
-          className={
-            classes.navLink + " " + classes.socialIconsButton
-          }
-          href="https://twitter.com/DfiMoney"
-          target="_blank"
-        >
-          <i
-            className={
-              classes.socialIcons +
-              " " +
-              classes.marginRight5 +
-              " fab fa fa-twitter"
-            }
-          />{" "}
-          Twitter
-        </Button>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Button
-          color="transparent"
-          className={
-            classes.navLink + " " + classes.socialIconsButton
-          }
-          href="https://t.me/yfiifinance"
-          target="_blank"
-        >
-          <i
-            className={
-              classes.socialIcons +
-              " " +
-              classes.marginRight5 +
-              " fab fa fa-telegram"
-            }
-          />{" "}
-          telegram
-        </Button>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Button
-          color="transparent"
-          className={
-            classes.navLink + " " + classes.socialIconsButton
-          }
-          href="https://github.com/yfii/vault"
-          target="_blank"
-        >
-          <i
-            className={
-              classes.socialIcons +
-              " " +
-              classes.marginRight5 +
-              " fab fa fa-github"
-            }
-          />{" "}
-          Github
-        </Button>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <Button
-          color="transparent"
-          className={
-            classes.navLink + " " + classes.socialIconsButton
-          }
-          aria-owns={open ? 'mouse-over-popover' : undefined}
-          aria-haspopup="true"
-          onMouseEnter={handlePopoverOpen}
-          onMouseLeave={handlePopoverClose}
-        >
-          <i
-            className={
-              classes.socialIcons +
-              " " +
-              classes.marginRight5 +
-              " fab fa fa-wechat"
-            }
-          />{" "}
-          Wechat
-        </Button>
-        <Popover
-          id="mouse-over-popover"
-          className={classes.popover}
-          classes={{
-            paper: classes.paper,
-          }}
-          open={open}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-        >
-          <Avatar variant="square" alt="YFII" src={require(`../../images/wechat.png`)} style={{width: "80px", height: "80px"}}/>
-        </Popover>
+        {address?(
+          <>{address}<Button onClick={disconnectWallet}>disconnectWallet</Button></>
+          ):(
+          <Button onClick={connectWallet}>connectWallet</Button>)
+        }
       </ListItem>
     </List>
   );
